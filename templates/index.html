@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Drag and Drop File Upload</title>
+<style>
+    #drop_zone {
+        width: 300px;
+        height: 200px;
+        border: 2px dashed #ccc;
+        border-radius: 10px;
+        text-align: center;
+        padding: 30px;
+        margin: 0 auto;
+        margin-top: 50px;
+    }
+
+    #drop_zone.dragover {
+        background-color: #f0f0f0;
+    }
+
+    #file_list {
+        margin-top: 20px;
+    }
+</style>
+</head>
+<body>
+
+<div id="drop_zone" ondrop="dropHandler(event);" ondragover="dragOverHandler(event);" ondragleave="dragLeaveHandler(event);">
+    <p>Drag & drop files here</p>
+</div>
+
+<div id="file_list"></div>
+
+<script>
+    function dragOverHandler(event) {
+        event.preventDefault();
+        event.stopPropagation();
+        event.target.classList.add('dragover');
+    }
+
+    function dragLeaveHandler(event) {
+        event.preventDefault();
+        event.stopPropagation();
+        event.target.classList.remove('dragover');
+    }
+
+    function dropHandler(event) {
+        event.preventDefault();
+        event.stopPropagation();
+        event.target.classList.remove('dragover');
+
+        var files = event.dataTransfer.files;
+
+        var formData = new FormData();
+        for (var i = 0; i < files.length; i++) {
+            formData.append('file', files[i]);
+        }
+    
+        fetch('/', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.blob(); // Convert response to Blob
+        })
+        .then(blob => {
+            const url = URL.createObjectURL(blob); // Create URL for Blob
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'output_files.zip'; // Specify the filename
+            document.body.appendChild(a);
+            a.click(); // Trigger click event to download the file
+            document.body.removeChild(a); // Clean up
+        })
+        .catch(error => {
+            console.error('There has been a problem with your fetch operation:', error);
+        });
+        
+
+        var fileList = document.getElementById('file_list');
+        fileList.innerHTML = '';
+
+        for (var i = 0; i < files.length; i++) {
+            var file = files[i];
+            fileList.innerHTML += '<div>' + file.name + ' - ' + file.size + ' bytes</div>';
+        }
+
+    }
+</script>
+
+</body>
+</html>
