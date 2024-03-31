@@ -1,0 +1,12 @@
+version: "3.8"
+
+services:
+  # react-app:
+  #   build: ./front  # Path to your React app directory
+  #   ports:
+  #     - "3000:3000"  # Map container port 3000 to host port 3000
+
+  flask-app:
+    build: ./back # Path to your Flask app directory
+    ports:
+      - "5000:5000"  # Map container port 5000 to host port 5000

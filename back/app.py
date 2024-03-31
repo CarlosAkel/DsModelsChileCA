@@ -1,8 +1,11 @@
 from flask import Flask, render_template, request, send_file, jsonify, send_from_directory
+from flask_cors import CORS
 import subprocess
 import os
 import zipfile
+import shutil
 app = Flask(__name__)
+CORS(app)
 
 @app.route('/', methods=['GET', 'POST'])
 def upload_file():
@@ -15,9 +18,9 @@ def upload_file():
         try:
             output_dir = '/tmp/output_dir'
             if os.path.exists(output_dir):
-                os.remove(output_dir)
+                shutil.rmtree(output_dir)
             if os.path.exists('/tmp/extract'):
-                os.remove('/tmp/extract')
+                shutil.rmtree('/tmp/extract')
             for file in files:
                 # Read the file content directly from file.stream
                 file_contents = file.stream.read()
@@ -52,5 +55,6 @@ def upload_file():
 
     return render_template('index.html')
 
+    
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', debug=True, port=5050)
+    app.run(host='0.0.0.0', debug=True, port=5000)
