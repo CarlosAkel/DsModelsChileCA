@@ -55,6 +55,9 @@ def upload_file():
 
     return render_template('index.html')
 
+@app.route('/show', methods=['GET'])
+def show():
+    return render_template('ShowModel.html')
     
 if __name__ == '__main__':
     app.run(host='0.0.0.0', debug=True, port=5000)
