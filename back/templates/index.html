@@ -4,26 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Drag and Drop File Upload</title>
-<style>
-    #drop_zone {
-        width: 300px;
-        height: 200px;
-        border: 2px dashed #ccc;
-        border-radius: 10px;
-        text-align: center;
-        padding: 30px;
-        margin: 0 auto;
-        margin-top: 50px;
-    }
-
-    #drop_zone.dragover {
-        background-color: #f0f0f0;
-    }
-
-    #file_list {
-        margin-top: 20px;
-    }
-</style>
+<link rel="stylesheet" href="./css/index.css">
 </head>
 <body>
 
@@ -32,6 +13,39 @@
 </div>
 
 <div id="file_list"></div>
+
+
+
+<button class="button" onclick="window.location.href='/show'">
+    <span>Show Models</span>
+</button>
+
+<button class="button-tutorial" onclick="openModal()">
+    <span>Models Tutorial (Recommended)</span>
+</button>
+
+<div id="myModal" class="modal">
+    <div class="modal-content">
+      <p>Please upload your NDS file and proceed with extracting the folder.
+         It's worth noting that the program may face challenges when extracting specific assets from the game's NDS files.
+        Consequently, there might be instances where the extracted folder is either empty or contains significantly fewer
+        assets than anticipated. Please be patient with the loading time, especially with larger NDS games, as it may take some time.
+      </p>
+      <img src="./css/DropFile.gif" alt="Drop" style="width:100%;height:100%;">
+      <p>Please choose the .glb file along with its associated assets. The format names of these assets may vary depending on the game. Typically,
+         the name of the .glb file corresponds to the textures,
+         although there are instances where multiple textures may be present (You can go to this page pressing the button Show Models). Also you can
+         change the size of the model with the slider.
+      </p>
+      <img src="./css/ShowModels.gif" alt="Drop" style="width:100%;height:100%;">
+    </div>
+</div>
+<div id="deathZone" class="death-zone" onclick="closeModal()"></div>
+  
+
+<div id="loading_screen">
+    <div id="loading_message">Loading...</div>
+</div>
 
 <script>
     function dragOverHandler(event) {
@@ -54,11 +68,11 @@
         var files = event.dataTransfer.files;
 
         var formData = new FormData();
-        for (var i = 0; i < files.length; i++) {
-            formData.append('file', files[i]);
-        }
-    
-        fetch('/', {
+        formData.append('file', files[0]);
+
+        document.getElementById('loading_screen').style.display = 'block'; // Show loading screen
+
+        fetch(window.location.href, {
             method: 'POST',
             body: formData
         })
@@ -72,24 +86,59 @@
             const url = URL.createObjectURL(blob); // Create URL for Blob
             const a = document.createElement('a');
             a.href = url;
-            a.download = 'output_files.zip'; // Specify the filename
+            a.download = files[0]["name"].split('.')[0] + '_assets.zip'; // Specify the filename
             document.body.appendChild(a);
             a.click(); // Trigger click event to download the file
             document.body.removeChild(a); // Clean up
         })
         .catch(error => {
             console.error('There has been a problem with your fetch operation:', error);
+        })
+        .finally(() => {
+            document.getElementById('loading_screen').style.display = 'none'; // Hide loading screen
         });
-        
 
         var fileList = document.getElementById('file_list');
         fileList.innerHTML = '';
 
         for (var i = 0; i < files.length; i++) {
             var file = files[i];
-            fileList.innerHTML += '<div>' + file.name + ' - ' + file.size + ' bytes</div>';
+            fileList.innerHTML += '<div style="display: flex; justify-content: center; align-items: center;">' + file.name + '</div>';
         }
 
+    }
+
+    // Modal For the tuto
+    var modal = document.getElementById("myModal");
+    modal.style.display = "none";
+    var btn = document.querySelector(".button-tutorial");
+    var span = document.getElementsByClassName("close")[0];
+
+    var deathZone = document.getElementById("deathZone");
+
+    // Function to open the modal
+    function openModal() {
+    modal.style.display = "block";
+    deathZone.style.display = "block";
+    }
+
+    function closeModal() {
+    modal.style.display = "none";
+    deathZone.style.display = "none";
+    }
+
+    btn.onclick = function() {
+    openModal();
+    }
+
+    span.onclick = function() {
+    closeModal();
+    }
+
+    window.onclick = function(event) {
+    if (event.target == modal) {
+        closeModal();
+    }
     }
 </script>
 

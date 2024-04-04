@@ -4,7 +4,7 @@ import subprocess
 import os
 import zipfile
 import shutil
-app = Flask(__name__)
+app = Flask(__name__,static_folder='css')
 CORS(app)
 
 @app.route('/', methods=['GET', 'POST'])

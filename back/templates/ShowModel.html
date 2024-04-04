@@ -14,7 +14,7 @@
 
         <script type="module" src="https://cdn.jsdelivr.net/npm/three@0.162.0/build/three.module.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.24.3/babel.min.js"></script>
-
+        <link rel="stylesheet" href="./css/index.css">
 
          
         <link rel="stylesheet" href="">
@@ -144,8 +144,8 @@
                         newInput.style.border = "2px dashed #ccc";
                         newInput.style.padding = "20px";
                         newInput.style.margin = "20px auto";
-                        newInput.style.width = "100%";
-                        newInput.style.height = "200px";
+                        newInput.style.width = "80%";
+                        newInput.style.height = "100%";
                         newInput.style.textAlign = "center";
                         newInput.style.lineHeight = "200px";
                         newInput.style.fontWeight = "bold";
@@ -176,7 +176,7 @@
             
                     setRenderer() {
             
-                        const rendererPercentage = 0.8;
+                        const rendererPercentage = 1;
             
                         const width = window.innerWidth * rendererPercentage;
                         const height = window.innerHeight * 0.6;
@@ -399,8 +399,11 @@
             
                 return (
                     <div id="ModelDiv">
+                        <button class="button" onClick={() => { window.location.href = '/';}}>
+                            <span>Go Back</span>
+                        </button>
                         <Box sx={{ width: 300 }}>
-                            <Slider defaultValue={1} step={0.01} aria-label="Default" min={1} max={10} onChange={handleSliderChange} valueLabelDisplay="auto" id="sizeSlider" />
+                            <Slider defaultValue={1} step={0.01} aria-label="Default" min={1} max={100} onChange={handleSliderChange} valueLabelDisplay="auto" id="sizeSlider" />
                         </Box>
                         <FormControl>
                             <InputLabel id="select-label">Choose an option</InputLabel>
@@ -430,7 +433,7 @@
     
             // Execute transpiled code
             eval(code);
-            {% endraw %}
+            {% endraw %}
         </script>
        
 
